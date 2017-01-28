@@ -98,16 +98,8 @@ ul.list-inline li {
     transition: 1s ease all;
 }
 
-.filter-gallery.filter-blog [data-filter-type='blog'] {
-    opacity: 1;
-    transform: scale(1);
-}
-
-.filter-gallery.filter-news [data-filter-type='news'] {
-    opacity: 1;
-    transform: scale(1);
-}
-
+.filter-gallery.filter-blog [data-filter-type='blog'],
+.filter-gallery.filter-news [data-filter-type='news'],
 .filter-gallery.filter-social [data-filter-type='social'] {
     opacity: 1;
     transform: scale(1);

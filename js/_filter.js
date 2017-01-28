@@ -1,7 +1,13 @@
-var FilterComponent = function () {
-    var $component = $(".filter-component");
-    var $blocksContainer = $('.filter-gallery');
-    var $filterControls = $('.filter-control');
+var FilterComponent = function() {
+    var $component,
+        $elementsContainer,
+        $controls;
+
+    var defaults = {
+        component: '.filter-component',
+        controls: '.filter-control',
+        elementsContainer: '.filter-gallery'
+    };
 
     function handleClickOnControls(e) {
         e.preventDefault();
@@ -11,31 +17,34 @@ var FilterComponent = function () {
 
         $this.parent().toggleClass('highlight');
 
-        if(filterValue.indexOf('all') >= 0){
-            var classList = $blocksContainer.attr('class');
+        if (filterValue.indexOf('all') >= 0) {
+            var classList = $elementsContainer.attr('class');
             var indexOfAll = classList.indexOf('filter-gallery') + 'filter-gallery'.length;
-            if(classList.indexOf('filter-all') > -1){
+            if (classList.indexOf('filter-all') > -1) {
                 classList = classList.substring(0, indexOfAll);
-            }
-            else{
+            } else {
                 classList = classList.substring(0, indexOfAll) + ' filter-all';
             }
-            $blocksContainer.attr('class', classList);
+            $elementsContainer.attr('class', classList);
             $this.parent().siblings().removeClass('highlight');
-        }
-        else{
-            $blocksContainer.toggleClass(filterValue);
-            $blocksContainer.removeClass('filter-all');
+        } else {
+            $elementsContainer.toggleClass(filterValue);
+            $elementsContainer.removeClass('filter-all');
             $("[data-filter='filter-all']").parent().removeClass('highlight');
         }
     }
 
     function bindEvents() {
-        $filterControls.on('click', handleClickOnControls);
+        $controls.on('click', handleClickOnControls);
     }
 
     function init() {
-        if (!$component.length) return;
+        $component = $('.filter-component');
+        $elementsContainer = $('.filter-gallery');
+        $controls = $('.filter-control');
+
+        if (!$component.length || !$elementsContainer || !$controls) return;
+
         bindEvents();
     }
 
