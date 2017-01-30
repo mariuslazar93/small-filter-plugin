@@ -2,6 +2,8 @@
 
 Small JavaScript plugin that can help you filter through a set of blocks by selecting one or more categories.
 
+[LIVE DEMO](https://mariuslazar93.github.io/plugins/filter/) 
+
 ## Getting Started
 
 These instructions will get you a copy of the project up and running on your local machine for development and testing purposes.
