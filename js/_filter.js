@@ -1,55 +1,91 @@
-var FilterComponent = function() {
-    var $component,
-        $elementsContainer,
-        $controls;
+(function(global, $) {
 
-    var defaults = {
-        component: '.filter-component',
-        controls: '.filter-control',
-        elementsContainer: '.filter-gallery'
-    };
+    var FilterComponent = function(options) {
+        var $component,
+            $elementsContainer,
+            $controls,
+            $filterAllControl,
+            $otherControls,
+            opts;
 
-    function handleClickOnControls(e) {
-        e.preventDefault();
+        var defaults = {
+            component: '.filter-component',
+            elementsContainer: '.filter-gallery',
+            controls: '.filter-control'
+        };
 
-        var $this = $(this),
-            filterValue = $this.data('filter');
+        function handleClickOnControls(e) {
+            e.preventDefault();
+            var $this = $(this),
+                filterValue = $this.attr('data-filter'),
+                galleryFilterData = $elementsContainer.attr('data-filter');
 
-        $this.parent().toggleClass('highlight');
+            $this.toggleClass('highlight');
 
-        if (filterValue.indexOf('all') >= 0) {
-            var classList = $elementsContainer.attr('class');
-            var indexOfAll = classList.indexOf('filter-gallery') + 'filter-gallery'.length;
-            if (classList.indexOf('filter-all') > -1) {
-                classList = classList.substring(0, indexOfAll);
+            if (filterValue === 'filter-all') {
+                if ($elementsContainer.attr('data-filter') === 'filter-all') {
+                    $elementsContainer.attr('data-filter', '');
+                } else {
+                    $elementsContainer.attr('data-filter', 'filter-all');
+                    $otherControls.removeClass('highlight');
+                }
             } else {
-                classList = classList.substring(0, indexOfAll) + ' filter-all';
+                galleryFilterData = toggleString(galleryFilterData, filterValue);
+                galleryFilterData = removeString(galleryFilterData, 'filter-all');
+                $elementsContainer.attr('data-filter', galleryFilterData);
+                $filterAllControl.removeClass('highlight');
             }
-            $elementsContainer.attr('class', classList);
-            $this.parent().siblings().removeClass('highlight');
-        } else {
-            $elementsContainer.toggleClass(filterValue);
-            $elementsContainer.removeClass('filter-all');
-            $("[data-filter='filter-all']").parent().removeClass('highlight');
         }
-    }
 
-    function bindEvents() {
-        $controls.on('click', handleClickOnControls);
-    }
+        function toggleString(str, strToToggle) {
+            var indexOfFilterValue = str.indexOf(strToToggle);
+            if (indexOfFilterValue > -1) {
+                if (indexOfFilterValue === 0) {
+                    str = str.substring(strToToggle.length + 1);
+                } else {
+                    str = str.substring(0, indexOfFilterValue) + str.substring(indexOfFilterValue + strToToggle.length + 1);
+                }
+            } else {
+                str = str.length === 0 ? strToToggle : (str + ' ' + strToToggle);
+            }
+            return str;
+        }
 
-    function init() {
-        $component = $('.filter-component');
-        $elementsContainer = $('.filter-gallery');
-        $controls = $('.filter-control');
+        function removeString(str, strToRemove) {
+            var indexStrToRemove = str.indexOf(strToRemove);
+            if (indexStrToRemove > -1) {
+                if (indexStrToRemove === 0) {
+                    str = str.substring(strToRemove.length + 1);
+                } else {
+                    str = str.substring(0, indexStrToRemove) + str.substring(indexStrToRemove + strToRemove.length + 1);
+                }
+            }
+            return str;
+        }
 
-        if (!$component.length || !$elementsContainer || !$controls) return;
+        function bindEvents() {
+            $controls.on('click', handleClickOnControls);
+        }
 
-        bindEvents();
-    }
+        function init(options) {
+            opts = $.extend({}, defaults, options || {});
 
-    return {
-        init: init
+            $component = $(opts.component);
+            $elementsContainer = $(opts.elementsContainer, $component);
+            $controls = $(opts.controls, $component);
+            $filterAllControl = $(opts.controls + "[data-filter='filter-all']", $component);
+            $otherControls = $controls.not("[data-filter='filter-all']");
+            if (!$component.length || !$elementsContainer || !$controls) return;
+
+            bindEvents();
+        }
+
+        init(options);
     };
 
-}();
+    if (global.FilterComponent) {
+        console.log('FilterComponent already exist!');
+    } else {
+        global.FilterComponent = FilterComponent;
+    }
+}(this, jQuery));

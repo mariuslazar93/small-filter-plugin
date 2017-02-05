@@ -1,8 +1,8 @@
-# Filter plugin
+# Simple Filter plugin
 
-Small JavaScript plugin that can help you filter through a set of blocks by selecting one or more categories.
+Small JavaScript plugin that can help you filter through a set of blocks.
 
-[LIVE DEMO](https://mariuslazar93.github.io/plugins/filter/) 
+[LIVE DEMO](https://mariuslazar93.github.io/plugins/filter/)
 
 ## Getting Started
 
@@ -11,6 +11,33 @@ These instructions will get you a copy of the project up and running on your loc
 ### Prerequisites
 
 * jQuery > 1.4.3
+
+### How it works
+
+Based on the simplified HTML structure:
+
+```html
+<section class="filter-component">
+	<div class="filter-controls">
+    	<a href="#" class="filter-control highlight" data-filter="filter-all">all</a>
+    	<a href="#" class="filter-control" data-filter="filter-blog">blog</a>
+    	...
+    </div>
+    <div class="filter-gallery" data-filter="filter-all">
+    	<div data-filter-type="filter-blog">
+        	<h2>Positive thinking</h2>
+         	<p>...</p>
+        </div>
+        ...
+    </div>
+</section>
+```
+
+The `data-filter` attribute on the element with the `filter-gallery` class will contain what should be filtred.
+
+In the example above, `data-filter` equals `filter-all` which will show all the elements inside `filter-gallery`. If `data-filter` would be equal to `filter-blog`, than only the elements with `data-type-filter="filter-blog"` would be visible.
+
+When a control button is clicked, the `data-filter` attribute on the element with the `filter-gallery` class is replaced by the value of the `data-filter` attribute coresponding to the control. In CSS, all the blocks inside `filter-gallery` are hidden, except the ones that have the value of the `data-filter-type` attribute contained inside the `data-filter` attribute of the parent wrapper (element with `filter-gallery` class).
 
 ### Usage
 
@@ -23,12 +50,12 @@ These instructions will get you a copy of the project up and running on your loc
 </section>
 ```
 
-2. Inside the parent component, declare the control filtering buttons. Each control should have the `.filter-control` class and a `data-filter` attribute which specify what it should filter when it is clicked. Also, each control should have a wrapping parent that can get the `.highlight` class whenever it is active.
+2. Inside the parent component, declare the control filtering buttons. Each control should have a specific class (**if using the default plugin config, then add the `filter-control` class**) and a `data-filter` attribute which specify what category it should filter when it is clicked. The active control when the page load should have the `highlight` class.
 
 ```html
 <div class="filter-controls">
     <ul class="list-inline list-unstyle">
-        <li class="highlight"><a href="#" class="filter-control" data-filter="filter-all">ALL</a></li>
+        <li><a href="#" class="filter-control highlight" data-filter="filter-all">ALL</a></li>
         <li><a href="#" class="filter-control" data-filter="filter-blog"><span>BLOG</span></a></li>
         <li><a href="#" class="filter-control" data-filter="filter-news"><span>NEWS</span></a></li>
         <li><a href="#" class="filter-control" data-filter="filter-social"><span>SOCIAL</span></a></li>
@@ -36,21 +63,31 @@ These instructions will get you a copy of the project up and running on your loc
 </div>
 ```
 
-3. Inside the parent component, declare the blocks that need to be filtered with a `data-filter-type` attribute equal to the category of the current block.. Wrapped all those blocks inside an element with `.filter-gallery filter-all` classes. The `filter-all` class represents the initial state, meaning that all the blocks will be initially visible.
+3. Inside the parent component, declare a wrapping element for all the blocks you need to filter. This element should have a specific class (**if using the default plugin config, then add the `filter-gallery` class**) and a `data-filter` attribute equal to the category you want to filter when the page loads. Usually it will be equal to `filter-all`. This `data-filter` attribute will be used to filter its children blocks.
 
 ```html
-<div class="filter-gallery filter-all">
-    <div class="filter-block" data-filter-type="blog">
-        <span class="category">blog</span>
-        <h2>Lorem ipsum dolor</h2>
-        <span class="date"><em>09/10/2016  -  10:35</em></span>
-        <p class="text">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+<div class="filter-component">
+  <div class="filter-controls">
+	...
+  </div>
+  <div class="filter-gallery" data-filter="filter-all">
+  	...
+  </div>
+</div>
+```
+
+3. Inside the previous element, declare the blocks that need to be filtered. Each elemet should have a `data-filter-type` attribute equal to the category it represents.
+
+```html
+<div class="filter-gallery" data-filter="filter-all">
+    <div data-filter-type="filter-blog">
+        <h2 class="category">blog</h2>
     </div>
-    <div class="filter-block" data-filter-type="news">
-        <span class="category">news</span>
-        <h2>Lorem ipsum dolor</h2>
-        <span class="date"><em>09/10/2016  -  10:35</em></span>
-        <p class="text">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+    <div data-filter-type="filter-news">
+        <h2 class="category">news</h2>
+    </div>
+    <div data-filter-type="filter-social">
+        <h2 class="category">social</h2>
     </div>
 </div>
 ```
@@ -68,7 +105,7 @@ These instructions will get you a copy of the project up and running on your loc
 5. In CSS, declare the state of the filtered blocks when all are visible.
 
 ```css
-.filter-gallery.filter-all [data-filter-type] {
+.filter-gallery[data-filter='filter-all'] [data-filter-type] {
     opacity: 1;
     transform: scale(1);
     transition: 1s ease all;
@@ -78,9 +115,9 @@ These instructions will get you a copy of the project up and running on your loc
 5. In CSS, declare the style of the filtered blocks when they are visible.
 
 ```css
-.filter-gallery.filter-blog [data-filter-type='blog'],
-.filter-gallery.filter-news [data-filter-type='news'],
-.filter-gallery.filter-social [data-filter-type='social'] {
+.filter-gallery[data-filter*='filter-blog'] [data-filter-type='filter-blog'],
+.filter-gallery[data-filter*='filter-news'] [data-filter-type='filter-news'],
+.filter-gallery[data-filter*='filter-social'] [data-filter-type='filter-social']  {
     opacity: 1;
     transform: scale(1);
 }
@@ -95,40 +132,63 @@ These instructions will get you a copy of the project up and running on your loc
 7. Add the "_filter.js" file to the page/project.
 
 ```
-<script src="js/_filter.js"></script>
+<script src="js/_simpleFilter.min.js"></script>
 ```
 
 8. Initialize the plugin.
 
 ```javascript
-FilterComponent.init();
+$(function(){
+	var filterComponent = new FilterComponent();
+});
 ```
 
 ## Configuration
 
-For the moment, the plugin have only a default configuration which can be changed only if you modify the JavaScript file by yourself.
+* `component` - the class selector of the parent component
+* `elementsContainer` - the class selector of the filter blocks wrapping element
+* `controls` - the class selector of each control button
 
 ### Default configuration
 
 ```javascript
 var defaults = {
-        component: '.filter-component',
-        controls: '.filter-control',
-        elementsContainer: '.filter-gallery'
+		component: '.filter-component',
+        elementsContainer: '.filter-gallery',
+        controls: '.filter-control'
     };
+```
+
+### Changing the defaults
+
+You can specify your own configuration which will override the default one when you initialize the plugin.
+
+```javascript
+$(function(){
+	var filterComponent = new FilterComponent();
+
+    var filterComponent2 = new FilterComponent({
+        component: '.js-filter-comp',
+        elementsContainer: '.js-filter-gallery',
+        controls: '.js-filter-control'
+    });
+});
 ```
 
 ## Example
 
-Clone or download this repo locally and open index.html inside a browser.
+[LIVE DEMO](https://mariuslazar93.github.io/plugins/filter/)
+
+You can also clone or download this repo locally and open index.html inside a browser.
 
 **_Please use a modern browser because the current example uses flexbox for the minimal page styling._**
 
 ## Next steps
 
-* Make plugin customizable at initialization
-* Add the `single-filtering` feature, which should allow to filter by just one category (deselecting the of the other ones)
-* Complete replace of jQuery with vanilla JavaScript
+- [x] Make plugin customizable at initialization
+- [x] Allow multiple instantiation
+- [ ] Add the `single-filtering` feature, which should allow to filter by just one category (deselecting the of the other ones)
+- [ ] Complete replace of jQuery with vanilla JavaScript
 
 ## Authors
 
