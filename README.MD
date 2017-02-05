@@ -76,7 +76,7 @@ When a control button is clicked, the `data-filter` attribute on the element wit
 </div>
 ```
 
-3. Inside the previous element, declare the blocks that need to be filtered. Each elemet should have a `data-filter-type` attribute equal to the category it represents.
+4. Inside the previous element, declare the blocks that need to be filtered. Each elemet should have a `data-filter-type` attribute equal to the category it represents.
 
 ```html
 <div class="filter-gallery" data-filter="filter-all">
@@ -92,7 +92,7 @@ When a control button is clicked, the `data-filter` attribute on the element wit
 </div>
 ```
 
-4. In CSS, declare the state of all the filtered blocks when they are not visible. (maybe you want to `display: none` or to make them a little opaque `opacity:0.7`).
+5. In CSS, declare the state of all the filtered blocks when they are not visible. (maybe you want to `display: none` or to make them a little opaque `opacity:0.7`).
 
 ```css
 .filter-gallery [data-filter-type] {
@@ -102,7 +102,7 @@ When a control button is clicked, the `data-filter` attribute on the element wit
 }
 ```
 
-5. In CSS, declare the state of the filtered blocks when all are visible.
+6. In CSS, declare the state of the filtered blocks when all are visible.
 
 ```css
 .filter-gallery[data-filter='filter-all'] [data-filter-type] {
@@ -112,7 +112,7 @@ When a control button is clicked, the `data-filter` attribute on the element wit
 }
 ```
 
-5. In CSS, declare the style of the filtered blocks when they are visible.
+7. In CSS, declare the style of the filtered blocks when they are visible.
 
 ```css
 .filter-gallery[data-filter*='filter-blog'] [data-filter-type='filter-blog'],
@@ -123,19 +123,19 @@ When a control button is clicked, the `data-filter` attribute on the element wit
 }
 ```
 
-6. Add jQuery to your page/project.
+8. Add jQuery to your page/project.
 
 ```
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0/jquery.min.js"></script>
 ```
 
-7. Add the "_filter.js" file to the page/project.
+9. Add the "_filter.js" file to the page/project.
 
 ```
-<script src="js/_simpleFilter.min.js"></script>
+<script src="filter.min.js"></script>
 ```
 
-8. Initialize the plugin.
+10. Initialize the plugin.
 
 ```javascript
 $(function(){
@@ -187,7 +187,7 @@ You can also clone or download this repo locally and open index.html inside a br
 
 - [x] Make plugin customizable at initialization
 - [x] Allow multiple instantiation
-- [ ] Add the `single-filtering` feature, which should allow to filter by just one category (deselecting the of the other ones)
+- [ ] Add the `single-filtering` feature, which should allow to filter by just one category (deselecting all the others)
 - [ ] Complete replace of jQuery with vanilla JavaScript
 
 ## Authors
