@@ -1,8 +1,42 @@
 # Simple Filter plugin
 
-Small JavaScript plugin that can help you filter through a set of blocks.
+This is a small JavaScript plugin that can help you filter through a set of blocks. It can handle both single and multiple filtering.
 
 [LIVE DEMO](https://mariuslazar93.github.io/plugins/filter/)
+
+###### **_NOTE: For better performance, the show/hide animations are made with CSS. Change them as you wish._**
+
+## How it works
+
+Based on the simplified HTML structure:
+
+```html
+<section class="filter-component">
+	<div class="filter-controls">
+    	<a class="filter-control highlight" data-filter="filter-all">all</a>
+    	<a class="filter-control" data-filter="filter-blog">blog</a>
+    	...
+    </div>
+    <div class="filter-gallery" data-filter="filter-blog">
+    	<div data-filter-type="filter-blog">
+        	<h2>Positive blog</h2>
+        </div>
+        <div data-filter-type="filter-news">
+        	<h2>Positive news</h2>
+        </div>
+        ...
+    </div>
+</section>
+```
+
+The main components are the `filter-component` wrapping parent, the `filter-control` elements and the `filter-gallery` wrapper of the actual blocks which will be filtered.
+
+The logic is simple. The value of the `data-filter` attribute on the `filter-gallery` element represents the visible elements inside it. The blocks inside `filter-gallery` will have a `data-type-filter` attribute. Whenever the `data-filter` will contain the `data-type-filter` value, than that block will be visible. When `data-filter` equal to `filter-all`, than all elements will be visible.
+
+In the example above, `data-filter` equals `filter-all` which will show all the elements inside `filter-gallery`. If `data-filter` would be equal to `filter-blog`, than only the elements with `data-type-filter="filter-blog"` would be visible.
+
+When a control button is clicked, the value of the `data-filter` attribute on the `filter-gallery` element is replaced by the value of the `data-filter` attribute coresponding to the control. In CSS, all the blocks inside `filter-gallery` are will be hidden, except the ones that have the value of the `data-filter-type` attribute contained inside the `data-filter` attribute of the parent wrapper (element with `filter-gallery` class).
+
 
 ## Getting Started
 
@@ -12,35 +46,7 @@ These instructions will get you a copy of the project up and running on your loc
 
 * jQuery > 1.4.3
 
-### How it works
-
-Based on the simplified HTML structure:
-
-```html
-<section class="filter-component">
-	<div class="filter-controls">
-    	<a href="#" class="filter-control highlight" data-filter="filter-all">all</a>
-    	<a href="#" class="filter-control" data-filter="filter-blog">blog</a>
-    	...
-    </div>
-    <div class="filter-gallery" data-filter="filter-all">
-    	<div data-filter-type="filter-blog">
-        	<h2>Positive thinking</h2>
-         	<p>...</p>
-        </div>
-        ...
-    </div>
-</section>
-```
-
-The `data-filter` attribute on the element with the `filter-gallery` class will contain what should be filtred.
-
-In the example above, `data-filter` equals `filter-all` which will show all the elements inside `filter-gallery`. If `data-filter` would be equal to `filter-blog`, than only the elements with `data-type-filter="filter-blog"` would be visible.
-
-When a control button is clicked, the `data-filter` attribute on the element with the `filter-gallery` class is replaced by the value of the `data-filter` attribute coresponding to the control. In CSS, all the blocks inside `filter-gallery` are hidden, except the ones that have the value of the `data-filter-type` attribute contained inside the `data-filter` attribute of the parent wrapper (element with `filter-gallery` class).
-
 ### Usage
-
 
 1. In HTML, declare the parent component.
 
@@ -148,6 +154,7 @@ $(function(){
 * `component` - the class selector of the parent component
 * `elementsContainer` - the class selector of the filter blocks wrapping element
 * `controls` - the class selector of each control button
+* `singleFiltering` - if true, single filtering is active, else, multiple filtering will be active
 
 ### Default configuration
 
@@ -155,7 +162,8 @@ $(function(){
 var defaults = {
 		component: '.filter-component',
         elementsContainer: '.filter-gallery',
-        controls: '.filter-control'
+        controls: '.filter-control',
+        singleFiltering: true
     };
 ```
 
@@ -170,10 +178,38 @@ $(function(){
     var filterComponent2 = new FilterComponent({
         component: '.js-filter-comp',
         elementsContainer: '.js-filter-gallery',
-        controls: '.js-filter-control'
+        controls: '.js-filter-control',
+        singleFiltering: false'
     });
 });
 ```
+
+## API
+
+When you initialize the plugin, you can access some methods to change its internal state.
+
+**1. changeFiltering(option)**
+
+Using this method you can change the type of filtering. The function accept one argument which should be string. Possible values:
+
+- single
+- multiple
+
+```javascript
+var filterComp = new FilterComponent();
+filterComp.changeFiltering('single');
+filterComp.changeFiltering('multiple');
+```
+
+**2. reset()**
+
+Using this method you can reset the filter to its initial state.
+
+```javascript
+var filterComp = new FilterComponent();
+filterComp.reset();
+```
+
 
 ## Example
 
@@ -187,7 +223,7 @@ You can also clone or download this repo locally and open index.html inside a br
 
 - [x] Make plugin customizable at initialization
 - [x] Allow multiple instantiation
-- [ ] Add the `single-filtering` feature, which should allow to filter by just one category (deselecting all the others)
+- [x] Add the `single-filtering` feature, which should allow to filter by just one category (deselecting all the others)
 - [ ] Complete replace of jQuery with vanilla JavaScript
 
 ## Authors
